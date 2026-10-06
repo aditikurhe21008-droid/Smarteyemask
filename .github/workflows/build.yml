@@ -1,1 +1,24 @@
-1983123c3b33e0dda5a52926e7d37f9d625b17f3
+name: Build APK
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.5
+      - name: Unzip project
+        run: unzip -o SmartEyeMask_Android_Project_Fixed.zip
+      - name: Build debug APK
+        run: cd SmartEyeMaskApp && gradle assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SmartEyeMask-APK
+          path: SmartEyeMaskApp/app/build/outputs/apk/debug/app-debug.apk
